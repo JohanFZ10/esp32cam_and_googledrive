@@ -1,0 +1,59 @@
+function doPost(e) {
+    //const cropStartDate1 = '2023-09-20'; 
+    const cropStartDate1 = '2023-10-06'; 
+  
+    var data = Utilities.base64Decode(e.parameters.data);
+  
+    // Calcular dias transcurridos desde la plantacion del cultivo
+    var currentDate = Utilities.formatDate(new Date(),"GMT", "yyyy-MM-dd");
+    var elapsedDays = calculateElpasedDays(cropStartDate1, currentDate);
+  
+    var nombreArchivo = Utilities.formatDate(new Date(), "GMT-5", "yyyy-MM-dd_HHmmss");
+    if(elapsedDays < 8){
+      //Semana 1 del Cultivo
+      nombreArchivo = nombreArchivo + "-S1.jpg";
+    }else if(elapsedDays >= 8 && elapsedDays < 15){
+      //Semana 2 del Cultivo
+      nombreArchivo = nombreArchivo + "-S2.jpg";
+    }else if(elapsedDays >= 15 && elapsedDays < 22){
+      //Semana 3 del Cultivo
+      nombreArchivo = nombreArchivo + "-S3.jpg";
+    }else if(elapsedDays >= 22 && elapsedDays < 29){
+      //Semana 4 del Cultivo
+      nombreArchivo = nombreArchivo + "-S4.jpg";
+    }else if(elapsedDays >= 29 && elapsedDays < 36){
+      //Semana 5 del Cultivo
+      nombreArchivo = nombreArchivo + "-S5.jpg";
+    }else if(elapsedDays >= 36 && elapsedDays < 43){
+      //Semana 6 del Cultivo
+      nombreArchivo = nombreArchivo + "-S6.jpg";
+    }else if(elapsedDays >= 43 && elapsedDays < 50){
+      //Semana 7 del Cultivo
+      nombreArchivo = nombreArchivo + "-S7.jpg";
+    }else if(elapsedDays >= 50 && elapsedDays < 57){
+      //Semana 8 del Cultivo
+      nombreArchivo = nombreArchivo + "-S8.jpg";
+    }
+    
+    var blob = Utilities.newBlob(data, e.parameters.mimetype, nombreArchivo );
+    
+    
+    // Save the photo to Google Drive
+    var folder, folders = DriveApp.getFoldersByName("CULTIVO1-CAM");
+    if (folders.hasNext()) {
+      folder = folders.next();
+    } else {
+      folder = DriveApp.createFolder("CULTIVO1-CAM");
+    }
+    var file = folder.createFile(blob); 
+    return ContentService.createTextOutput('Completo')
+  }
+  
+  function calculateElpasedDays(fechaInicial, fechaFinal){
+    var fechaInicio = new Date(fechaInicial).getTime();
+    var fechaFin    = new Date(fechaFinal).getTime();
+  
+    var diff = fechaFin - fechaInicio;
+  
+    return(diff/(1000*60*60*24));
+  }
